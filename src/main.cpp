@@ -2,7 +2,9 @@
 
 int main() {
 
-    oth::init();
+    oth::Othello board(8);
+
+    board.drawBoard();
 
     return 0;
 }
