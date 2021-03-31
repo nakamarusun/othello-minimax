@@ -3,9 +3,8 @@
 
 using namespace oth;
 
-Othello::Piece::Piece() {
-    this->col = none;
-}
+Othello::Piece::Piece() {this->col = none;}
+Othello::Piece::Piece(Color col) : col(col) {}
 
 Othello::Othello(int size) : size(size) {
 
@@ -16,6 +15,15 @@ Othello::Othello(int size) : size(size) {
     for (int i = 0; i < size; i++) {
         this->board[i] = new Othello::Piece[size];
     }
+
+    // Fill the middle of the board with the pieces.
+    Othello::Piece** board = this->board;
+    int half = size/2;
+
+    board[half-1][half-1] = Othello::Piece(black);
+    board[half-1][half] = Othello::Piece(white);
+    board[half][half-1] = Othello::Piece(white);
+    board[half][half] = Othello::Piece(black);
 }
 
 Othello::~Othello() {
@@ -27,6 +35,7 @@ Othello::~Othello() {
 
     delete[] this->board;
 }
+
 
 void Othello::drawBoard() {
     const int size = this->size;

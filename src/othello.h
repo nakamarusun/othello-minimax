@@ -25,6 +25,7 @@ private:
         Color col;
 
         Piece();
+        Piece(Color col);
     };
 
     // Matrix to store the pieces data.
@@ -40,6 +41,7 @@ public:
     // Deallocate
     ~Othello();
 
+    // Draws the board in the command line.
     void drawBoard();
 
     };
