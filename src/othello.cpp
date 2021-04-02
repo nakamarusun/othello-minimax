@@ -30,13 +30,12 @@ Othello::Othello(int size) : size(size) {
     addPiece(black, half-1, half);
     addPiece(black, half, half-1);
     addPiece(white, half, half);
-    addPiece(black, 5, 4);
 }
 
 Othello::~Othello() {
     // Deallocate everything
     // First, deallocate the extra dimension
-    for (int i = 0; i < this->size; i++) {
+    for (int i = 0; i < size; i++) {
         delete[] this->board[i];
         delete[] this->_checked[i];
     }
@@ -127,7 +126,7 @@ void Othello::updateValidMoves() {
 
             // If this cell is not checked yet and not occupied, do stuff
             // Also check if the cell is still inside the boundary
-            if ((cx < this->size && cx > -1 && cy < this->size && cy > -1) && !_checked[cy][cx] && board[cy][cx].col == none) {
+            if (!_checked[cy][cx] && (cx < size && cx > -1 && cy < size && cy > -1) && board[cy][cx].col == none) {
 
                 // Tag as checked
                 _checked[cy][cx] = true;
@@ -154,34 +153,25 @@ void Othello::updatePotentialCell(int x, int y) {
 }
 
 Color Othello::walkBoard(int x, int y, const int* direction) {
-    y += direction[0];
-    x += direction[1];
-
-    // If out of bounds or no color, continue.
-    if (!(x < this->size && x > -1 && y < this->size && y > -1)) return none;
-    if (board[y][x].col == none) return none;
-
-    // Eat color is the color of piece that will be consumed if the move is valid
-    Color eatColor = board[y][x].col;
+    y += direction[0]*2;
+    x += direction[1]*2;
 
     // Walk the board, if the tile is not none, and still within the bounds.
-    do {
+    while (x < size && x > -1 && y < size && y > -1) {
         // Return the color, if different color is found.
-        if (board[y][x].col != eatColor) {
+        if (board[y][x].col != board[y-direction[0]][x-direction[1]].col) {
             return board[y][x].col;
         }
 
-        // Walk
+        // Walk the board
         y += direction[0];
         x += direction[1];        
 
-    } while (x < this->size && x > -1 && y < this->size && y > -1);
+    }
     return none;
 }
 
 void Othello::drawBoard() {
-    const int size = this->size;
-    Cell** board = this->board;
 
     // Iterate the board matrix
     for (int i = 0; i < size; i++) {
