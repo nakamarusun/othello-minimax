@@ -1,8 +1,9 @@
 #include "othello.h"
+#include "randomengine.cpp"
 
 int main() {
-
-    oth::Othello board(8);
+    // Initializes the board with the engines.
+    oth::Othello board(8, oth::RandomEngine(), oth::RandomEngine());
 
     board.drawBoard();
 

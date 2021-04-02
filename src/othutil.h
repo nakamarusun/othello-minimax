@@ -8,5 +8,14 @@ namespace oth {
 
         Point(int x, int y);
     };
-    
+
+    /*
+        Color of the othello pieces. For now, it's
+        only black and white.
+    */
+    enum Color : unsigned char {
+        none,
+        black,
+        white
+    };
 }

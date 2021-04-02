@@ -2,7 +2,6 @@
 #include "othutil.h"
 #include <iostream>
 #include <list>
-#include <iterator>
 
 using namespace oth;
 
@@ -12,7 +11,11 @@ Othello::Cell::Cell() {
 
 Point::Point(int x, int y) : x(x), y(y) {}
 
-Othello::Othello(int size) : size(size) {
+Othello::Othello(int size, const Engine& whiteEngine, const Engine& blackEngine) :
+    size(size),
+    whiteEngine(&whiteEngine),
+    blackEngine(&blackEngine)
+    {
 
     // Create the first dimension
     this->board = new Cell*[size];
@@ -72,10 +75,7 @@ void Othello::addPiece(Color color, int x, int y) {
     }
 
     // Adds the corresponding piece to the board.
-    Cell* curCell = &board[y][x];
-
-    // Update cell
-    curCell->col = color;
+    board[y][x].col = color;
 
     // Adds the coordinate to the list.
     pieces.push_back(Point(x, y));
@@ -115,8 +115,8 @@ void Othello::updateValidMoves() {
 
     // Iterates the present pieces
     for (std::list<Point>::iterator it = pieces.begin(); it != pieces.end(); ++it) {
-        int x = (*it).x;
-        int y = (*it).y;
+        int x = it->x;
+        int y = it->y;
 
         // Iterate all the directions adjacent to current tile.
         for (int i = 0; i < 8; i++) {
@@ -178,13 +178,11 @@ void Othello::drawBoard() {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
 
-            Cell* curCell = &board[i][j];
-
             // Print corresponding symbol
             char symbol;
 
             // Print the piece, if the cell is occupied.
-            switch(curCell->col) {
+            switch(board[i][j].col) {
                 case(black):
                     symbol = 'O';
                     break;

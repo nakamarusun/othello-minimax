@@ -2,22 +2,12 @@
 
 #include <list>
 #include "othutil.h"
-#include "othengine.h"
 
 namespace oth {
-
-    /*
-        Color of the othello pieces. For now, it's
-        only black and white.
-    */
-    enum Color : unsigned char {
-        none,
-        black,
-        white
-    };
-
-    // 8 Directions too iterate, when checking adjacent cells
+    // 8 Directions to iterate, when checking adjacent cells
     const static int direction[8][2] = {{1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}};
+
+    class Engine;
 
     /*
         Here, we define the othello board.
@@ -40,7 +30,15 @@ private:
     int whiteScore;
     int blackScore;
 
-    // Helper variable to store whether a tile is checked.
+    // Store potential moves
+    std::list<Point> whiteMove;
+    std::list<Point> blackMove;
+
+    // Store engine objects.
+    const Engine* whiteEngine;
+    const Engine* blackEngine;
+
+    // Helper variable to keep trach whether a tile is checked for potential moves.
     bool** _checked;
 
     // Matrix to store the current state of the board with the cells.
@@ -49,9 +47,6 @@ private:
     // List to store all the active pieces' coordinates.
     std::list<Point> pieces;
 
-    // Store potential moves
-    std::list<Point> whiteMove;
-    std::list<Point> blackMove;
 
     // Makes everything in checked to be false.
     void _resetChecked();
@@ -77,7 +72,7 @@ public:
     const int size;
     
     // Initializes the othello board, with all the variables.
-    Othello(int size);
+    Othello(int size, const Engine& whiteEngine, const Engine& blackEngine);
 
     // Deallocate mem
     ~Othello();
@@ -86,5 +81,4 @@ public:
     void drawBoard();
 
     };
-
 }
