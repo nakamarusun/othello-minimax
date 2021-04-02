@@ -33,10 +33,6 @@ private:
     int whiteScore;
     int blackScore;
 
-    // Store potential moves
-    std::list<Point> whiteMove;
-    std::list<Point> blackMove;
-
     // Store engine objects.
     const Engine* whiteEngine;
     const Engine* blackEngine;
@@ -71,6 +67,11 @@ private:
     Color walkBoard(int x, int y, const int* direction);
 
 public:
+
+    // Store potential moves
+    std::list<Point> whiteMove;
+    std::list<Point> blackMove;
+
     // Board size
     const int size;
     

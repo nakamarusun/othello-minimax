@@ -66,7 +66,7 @@ void Othello::_resetPotentialMoves() {
 void Othello::addPiece(Color color, int x, int y) {
     // Make it return the point i think...
     // Don't insert if piece is already there
-    if (board[y][x].col != none) return;
+    if (!(x > -1 && y > -1 && x < size && y < size) || board[y][x].col != none) return;
 
     // Add scores
     if (color == white) {
@@ -128,7 +128,7 @@ void Othello::updateValidMoves() {
 
             // If this cell is not checked yet and not occupied, do stuff
             // Also check if the cell is still inside the boundary
-            if (!_checked[cy][cx] && (cx < size && cx > -1 && cy < size && cy > -1) && board[cy][cx].col == none) {
+            if ((cx < size && cx > -1 && cy < size && cy > -1) && board[cy][cx].col == none && !_checked[cy][cx]) {
 
                 // Tag as checked
                 _checked[cy][cx] = true;
@@ -155,21 +155,28 @@ void Othello::updatePotentialCell(int x, int y) {
 }
 
 Color Othello::walkBoard(int x, int y, const int* direction) {
-    y += direction[0]*2;
-    x += direction[1]*2;
+    y += direction[0];
+    x += direction[1];
+
+    // If out of bounds or no color, continue.
+    if (!(x < this->size && x > -1 && y < this->size && y > -1)) return none;
+    if (board[y][x].col == none) return none;
+
+    // Eat color is the color of piece that will be consumed if the move is valid
+    Color eatColor = board[y][x].col;
 
     // Walk the board, if the tile is not none, and still within the bounds.
-    while (x < size && x > -1 && y < size && y > -1) {
+    do {
         // Return the color, if different color is found.
-        if (board[y][x].col != board[y-direction[0]][x-direction[1]].col) {
+        if (board[y][x].col != eatColor) {
             return board[y][x].col;
         }
 
-        // Walk the board
+        // Walk
         y += direction[0];
         x += direction[1];        
 
-    }
+    } while (x < this->size && x > -1 && y < this->size && y > -1);
     return none;
 }
 
@@ -209,6 +216,11 @@ void Othello::startGame(Color turn) {
     // While there is still valid moves, we loop.
     while (whiteMove.size() > 0 && blackMove.size() > 0) {
 
+        if (pauseEveryTurn) {
+            std::cout << "Press Enter to Continue";
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+        }
+
         std::cout << (turn == white ? "White" : "Black") << "'s Turn" << std::endl;
 
         // Assign the correct engine
@@ -223,14 +235,13 @@ void Othello::startGame(Color turn) {
         }
 
         // Run the engine
-        curEngine->nextMove(*this, turn);
+        Point move = curEngine->nextMove(*this, turn);
+        std::cout << move.x << " " << move.y << std::endl;
+
+        // And insert the move.
+        addPiece(turn, move.x, move.y);
 
         drawBoard();
-
-        if (pauseEveryTurn) {
-            std::cout << "Press Enter to Continue";
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-        }
         
         // Switch the turns
         turn = turn == white ? black : white;

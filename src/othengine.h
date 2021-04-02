@@ -1,6 +1,7 @@
 #pragma once
 
 #include "othutil.h"
+#include "othello.h"
 
 namespace oth {
     class Othello;
