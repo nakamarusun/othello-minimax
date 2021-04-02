@@ -1,6 +1,8 @@
 #pragma once
+
 #include <list>
-#include <iterator>
+#include "othutil.h"
+#include "othengine.h"
 
 namespace oth {
 
@@ -34,14 +36,6 @@ private:
         Cell();
     };
 
-    // Simple struct to store coordinate.
-    struct Point {
-        int x;
-        int y;
-
-        Point(int x, int y);
-    };
-
     // Scores
     int whiteScore;
     int blackScore;
@@ -66,7 +60,6 @@ private:
     void _resetPotentialMoves();
 
     // This function is to add a new piece to the board.
-    // TODO: It will get added to the active list or something...
     void addPiece(Color color, int x, int y);
 
     // Recalculates all possible moves, and puts it in an array.

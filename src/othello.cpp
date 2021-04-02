@@ -1,4 +1,5 @@
 #include "othello.h"
+#include "othutil.h"
 #include <iostream>
 #include <list>
 #include <iterator>
@@ -9,7 +10,7 @@ Othello::Cell::Cell() {
     this->col = none;
 }
 
-Othello::Point::Point(int x, int y) : x(x), y(y) {}
+Point::Point(int x, int y) : x(x), y(y) {}
 
 Othello::Othello(int size) : size(size) {
 
