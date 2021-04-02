@@ -2,6 +2,7 @@
 
 #include <list>
 #include "othutil.h"
+#include "othengine.h"
 
 namespace oth {
     // 8 Directions to iterate, when checking adjacent cells
@@ -16,6 +17,8 @@ namespace oth {
     class Othello {
 
 private:
+
+    friend class Engine;
 
     // Describes what color a cell is occupying.
     // It also describes possible moves.
@@ -71,6 +74,12 @@ public:
     // Board size
     const int size;
     
+    // Game pauses after "enter" is inputted.
+    bool pauseEveryTurn = true;
+
+    // Whose turn is it
+    Color turn;
+    
     // Initializes the othello board, with all the variables.
     Othello(int size, const Engine& whiteEngine, const Engine& blackEngine);
 
@@ -79,6 +88,11 @@ public:
 
     // Draws the board in the command line.
     void drawBoard();
+
+    // Starts the game, with turn being the first color to go.
+    // pauseEveryTurn dictates whether the game needs "enter" input
+    // Everytime a turn is over.
+    void startGame(Color turn);
 
     };
 }

@@ -2,6 +2,7 @@
 #include "othutil.h"
 #include <iostream>
 #include <list>
+#include <limits>
 
 using namespace oth;
 
@@ -198,4 +199,42 @@ void Othello::drawBoard() {
         std::cout << std::endl;
     }
     std::cout << "White: " << whiteScore << " | Black: " << blackScore << std::endl;
+}
+
+void Othello::startGame(Color turn) {
+    // Start the game, and loop until complete.
+
+    drawBoard();
+
+    // While there is still valid moves, we loop.
+    while (whiteMove.size() > 0 && blackMove.size() > 0) {
+
+        std::cout << (turn == white ? "White" : "Black") << "'s Turn" << std::endl;
+
+        // Assign the correct engine
+        const Engine* curEngine;
+        switch (turn) {
+            case(black):
+                curEngine = blackEngine;
+                break;
+            case(white):
+                curEngine = whiteEngine;
+                break;
+        }
+
+        // Run the engine
+        curEngine->nextMove(*this, turn);
+
+        drawBoard();
+
+        if (pauseEveryTurn) {
+            std::cout << "Press Enter to Continue";
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+        }
+        
+        // Switch the turns
+        turn = turn == white ? black : white;
+    }
+
+    std::cout << "Game over" << std::endl;
 }

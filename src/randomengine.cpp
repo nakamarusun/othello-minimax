@@ -3,8 +3,7 @@
 namespace oth {
     class RandomEngine : public Engine {
 
-        Point nextMove(Othello& board, Color color) {
-
+        Point nextMove(const Othello& board, Color color) const {
             return Point(0, 0);
         }
     };
