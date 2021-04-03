@@ -31,10 +31,14 @@ Othello::Othello(int size, const Engine& whiteEngine, const Engine& blackEngine)
     // Fill the middle of the board with the initial pieces.
     int half = size/2;
 
+    // Add default pieces
     addPiece(white, half-1, half-1);
     addPiece(black, half-1, half);
     addPiece(black, half, half-1);
     addPiece(white, half, half);
+
+    // And update valid moves
+    updateValidMoves();
 }
 
 Othello::~Othello() {
@@ -63,10 +67,8 @@ void Othello::_resetPotentialMoves() {
     blackMove.clear();
 }
 
-void Othello::addPiece(Color color, int x, int y) {
-    // Make it return the point i think...
-    // Don't insert if piece is already there
-    if (!(x > -1 && y > -1 && x < size && y < size) || board[y][x].col != none) return;
+bool Othello::addPiece(Color color, int x, int y) {
+    if (!(x > -1 && y > -1 && x < size && y < size) || board[y][x].col != none) return false;
 
     // Add scores
     if (color == white) {
@@ -78,8 +80,16 @@ void Othello::addPiece(Color color, int x, int y) {
     // Adds the corresponding piece to the board.
     board[y][x].col = color;
 
-    // Adds the coordinate to the list.
+    // Adds the coordinate of the piece to the list.
     pieces.push_back(Point(x, y));
+
+    return true;
+}
+
+void Othello::playPiece(Color color, int x, int y) {
+
+    // Adds the pice
+    addPiece(color, x, y);
 
     // Walk the board, to see any takes.
     for (int i = 0; i < 8; i++) {
@@ -182,8 +192,16 @@ Color Othello::walkBoard(int x, int y, const int* direction) {
 
 void Othello::drawBoard() {
 
+    // Print first row of number coords
+    std::cout << "  ";
+    for (int i = 0; i < size;) std::cout << (++i) % 10 << " ";
+    std::cout << std::endl;
+
     // Iterate the board matrix
     for (int i = 0; i < size; i++) {
+        // Print column number coords
+        std::cout << (i+1) % 10 << " ";
+
         for (int j = 0; j < size; j++) {
 
             // Print corresponding symbol
@@ -236,10 +254,10 @@ void Othello::startGame(Color turn) {
 
         // Run the engine
         Point move = curEngine->nextMove(*this, turn);
-        std::cout << move.x << " " << move.y << std::endl;
 
         // And insert the move.
-        addPiece(turn, move.x, move.y);
+        std::cout << (turn == white ? "White" : "Black") << " Plays (" << move.x+1 << ", " << move.y+1 << ")" << std::endl;
+        playPiece(turn, move.x, move.y);
 
         drawBoard();
         

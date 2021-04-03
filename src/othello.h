@@ -6,7 +6,9 @@
 
 namespace oth {
     // 8 Directions to iterate, when checking adjacent cells
-    const static int direction[8][2] = {{1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}};
+    const static int direction[8][2] = {
+        {1, 1},{1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}
+    };
 
     class Engine;
 
@@ -53,8 +55,12 @@ private:
     // Reset all the potential moves.
     void _resetPotentialMoves();
 
-    // This function is to add a new piece to the board.
-    void addPiece(Color color, int x, int y);
+    // This function adds a new piece to the board, and do all the game calculations.
+    // Returns whether the operation is successful.
+    bool addPiece(Color color, int x, int y);
+
+    // This function is to add a new piece to the board and nothing else.
+    void playPiece(Color color, int x, int y);
 
     // Recalculates all possible moves, and puts it in an array.
     void updateValidMoves();
