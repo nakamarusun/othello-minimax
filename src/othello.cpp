@@ -10,6 +10,8 @@ Othello::Cell::Cell() {
     this->col = none;
 }
 
+Othello::UndoData::UndoData(Color col, Point coor) : col(col), coor(coor) {}
+
 Point::Point(int x, int y) : x(x), y(y) {}
 
 Othello::Othello(int size, const Engine& whiteEngine, const Engine& blackEngine) :
@@ -17,6 +19,9 @@ Othello::Othello(int size, const Engine& whiteEngine, const Engine& blackEngine)
     whiteEngine(&whiteEngine),
     blackEngine(&blackEngine)
     {
+
+    whiteScore = 0;
+    blackScore = 0;
 
     // Create the first dimension
     this->board = new Cell*[size];
@@ -106,10 +111,21 @@ bool Othello::updatePiece(Color color, int x, int y) {
     return true;
 }
 
-void Othello::playPiece(Color color, int x, int y) {
+void Othello::playPiece(Color color, int x, int y, bool addUndoStack) {
 
-    // Adds the pice
-    updatePiece(color, x, y);
+    // Allocate space for list
+    std::list<UndoData>* undoImd;
+    if (addUndoStack) {
+        // Insert to top of stack, if true
+        undos.push(std::list<UndoData>());
+        // Define pointer
+        undoImd = &undos.top();
+        // Adds the current piece
+        undoImd->push_back(UndoData(board[y][x].col, Point(x, y)));
+    }
+
+    // Adds the piece
+    if (!updatePiece(color, x, y)) return;
 
     // Walk the board, to see any takes.
     for (int i = 0; i < 8; i++) {
@@ -131,6 +147,10 @@ void Othello::playPiece(Color color, int x, int y) {
                     whiteScore--;
                 }
 
+                // Add to undo list
+                if (addUndoStack) undoImd->push_back(UndoData(board[y][x].col, Point(x, y)));
+
+                // Flip color
                 board[y][x].col = color;
             }
         }
@@ -210,6 +230,28 @@ Color Othello::walkBoard(int x, int y, const int* direction) {
     return none;
 }
 
+void Othello::undoMove() {
+    // Undoes one move
+
+    if (undos.empty()) return;
+
+    // Get the top
+    std::list<UndoData>* undo = &undos.top();
+
+    // Do all the moves here.
+    for (std::list<UndoData>::iterator it = undo->begin(); it != undo->end(); ++it) {
+        // Data pointer
+        UndoData* uData = &(*it);
+        updatePiece(uData->col, uData->coor.x, uData->coor.y);
+    }
+
+    // Pop stack
+    undos.pop();
+
+    // Switch the turn
+    turn = turn == white ? black : white;
+}
+
 void Othello::drawBoard() {
 
     // Print first row of number coords
@@ -277,7 +319,7 @@ void Othello::startGame(Color turn) {
 
         // And insert the move.
         std::cout << (turn == white ? "White" : "Black") << " Plays (" << move.x+1 << ", " << move.y+1 << ")" << std::endl;
-        playPiece(turn, move.x, move.y);
+        playPiece(turn, move.x, move.y, false);
 
         drawBoard();
         

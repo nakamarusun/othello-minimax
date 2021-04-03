@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <stack>
 #include "othutil.h"
 #include "othengine.h"
 
@@ -31,6 +32,14 @@ private:
         Cell();
     };
 
+    // Struct for the undo stack.
+    struct UndoData {
+        Color col;
+        Point coor;
+
+        UndoData(Color col, Point coor);
+    };
+
     // Scores
     int whiteScore;
     int blackScore;
@@ -48,6 +57,9 @@ private:
     // List to store all the active pieces' coordinates.
     std::list<Point> pieces;
 
+    // Stack to store the undos
+    std::stack<std::list<UndoData>> undos;
+
 
     // Makes everything in checked to be false.
     void _resetChecked();
@@ -60,13 +72,16 @@ private:
     bool updatePiece(Color color, int x, int y);
 
     // This function is to add a new piece to the board and nothing else.
-    void playPiece(Color color, int x, int y);
+    void playPiece(Color color, int x, int y, bool addUndoStack);
 
     // Recalculates all possible moves, and puts it in an array.
     void updateValidMoves();
 
     // Checks if a tile can be placed in this position.
     void updatePotentialCell(int x, int y);
+
+    // Undoes one move, and pops one from the stack.
+    void undoMove();
 
     // Walks the board to the specified direction. Will return the color
     // Of something that is different.
