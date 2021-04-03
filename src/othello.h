@@ -57,7 +57,7 @@ private:
 
     // This function adds a new piece to the board, and do all the game calculations.
     // Returns whether the operation is successful.
-    bool addPiece(Color color, int x, int y);
+    bool updatePiece(Color color, int x, int y);
 
     // This function is to add a new piece to the board and nothing else.
     void playPiece(Color color, int x, int y);

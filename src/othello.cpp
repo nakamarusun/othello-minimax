@@ -32,10 +32,10 @@ Othello::Othello(int size, const Engine& whiteEngine, const Engine& blackEngine)
     int half = size/2;
 
     // Add default pieces
-    addPiece(white, half-1, half-1);
-    addPiece(black, half-1, half);
-    addPiece(black, half, half-1);
-    addPiece(white, half, half);
+    updatePiece(white, half-1, half-1);
+    updatePiece(black, half-1, half);
+    updatePiece(black, half, half-1);
+    updatePiece(white, half, half);
 
     // And update valid moves
     updateValidMoves();
@@ -67,21 +67,41 @@ void Othello::_resetPotentialMoves() {
     blackMove.clear();
 }
 
-bool Othello::addPiece(Color color, int x, int y) {
-    if (!(x > -1 && y > -1 && x < size && y < size) || board[y][x].col != none) return false;
+bool Othello::updatePiece(Color color, int x, int y) {
+    if (!(x > -1 && y > -1 && x < size && y < size)) return false;
+
+    // Check what's in the board at that point
+    // And update the score.
+    switch (board[y][x].col) {
+        case (white):
+            whiteScore--;
+            break;
+        case (black):
+            blackScore--;
+            break;
+    }
 
     // Add scores
-    if (color == white) {
-        whiteScore++;
-    } else {
-        blackScore++;
+    switch (color) {
+        case (white):
+            whiteScore++;
+            break;
+        case (black):
+            blackScore++;
+            break;
     }
 
     // Adds the corresponding piece to the board.
     board[y][x].col = color;
 
-    // Adds the coordinate of the piece to the list.
-    pieces.push_back(Point(x, y));
+    // Adds or delete the coordinate of the piece.
+    if (color == none) {
+        // Removes
+        pieces.remove_if([x, y](Point point) { return (point.x == x && point.y == y); });
+    } else {
+        // Adds
+        pieces.push_back(Point(x, y));
+    }
 
     return true;
 }
@@ -89,7 +109,7 @@ bool Othello::addPiece(Color color, int x, int y) {
 void Othello::playPiece(Color color, int x, int y) {
 
     // Adds the pice
-    addPiece(color, x, y);
+    updatePiece(color, x, y);
 
     // Walk the board, to see any takes.
     for (int i = 0; i < 8; i++) {
