@@ -8,7 +8,7 @@ int main() {
 
     srand(time(NULL));
 
-    oth::Othello board(16, oth::RandomEngine(), oth::RandomEngine());
+    oth::Othello board(8, oth::RandomEngine(), oth::RandomEngine());
     // board.drawBoard();
 
     board.startGame(oth::black);
