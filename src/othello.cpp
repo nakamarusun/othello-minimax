@@ -12,9 +12,10 @@ Othello::Cell::Cell() {
 
 Othello::UndoData::UndoData(Color col, Point coor) : col(col), coor(coor) {}
 
+Point::Point() : x(0), y(0) {}
 Point::Point(int x, int y) : x(x), y(y) {}
 
-Othello::Othello(int size, const Engine& whiteEngine, const Engine& blackEngine) :
+Othello::Othello(int size, Engine& whiteEngine, Engine& blackEngine) :
     size(size),
     whiteEngine(&whiteEngine),
     blackEngine(&blackEngine)
@@ -230,6 +231,31 @@ Color Othello::walkBoard(int x, int y, const int* direction) {
     return none;
 }
 
+int Othello::getScore(Color color) {
+    switch(color) {
+        case (white):
+            return whiteScore;
+        case (black):
+            return blackScore;
+    }
+
+    return 0;
+}
+
+Color Othello::switchTurn() {
+    switch (turn) {
+        case (white):
+            turn = black;
+            break;
+        case (black):
+            turn = white;
+            break;
+        default:
+            turn = none;
+    }
+    return turn;
+}
+
 void Othello::undoMove() {
     // Undoes one move
 
@@ -249,7 +275,7 @@ void Othello::undoMove() {
     undos.pop();
 
     // Switch the turn
-    turn = turn == white ? black : white;
+    switchTurn();
 }
 
 void Othello::drawBoard() {
@@ -288,8 +314,11 @@ void Othello::drawBoard() {
     std::cout << "White: " << whiteScore << " | Black: " << blackScore << std::endl;
 }
 
-void Othello::startGame(Color turn) {
+void Othello::startGame(Color startTurn) {
     // Start the game, and loop until complete.
+
+    // Start with turn
+    turn = startTurn;
 
     drawBoard();
 
@@ -304,7 +333,7 @@ void Othello::startGame(Color turn) {
         std::cout << (turn == white ? "White" : "Black") << "'s Turn" << std::endl;
 
         // Assign the correct engine
-        const Engine* curEngine;
+        Engine* curEngine;
         switch (turn) {
             case(black):
                 curEngine = blackEngine;
@@ -315,7 +344,7 @@ void Othello::startGame(Color turn) {
         }
 
         // Run the engine
-        Point move = curEngine->nextMove(*this, turn);
+        Point move = curEngine->nextMove(*this);
 
         // And insert the move.
         std::cout << (turn == white ? "White" : "Black") << " Plays (" << move.x+1 << ", " << move.y+1 << ")" << std::endl;
@@ -324,7 +353,7 @@ void Othello::startGame(Color turn) {
         drawBoard();
         
         // Switch the turns
-        turn = turn == white ? black : white;
+        switchTurn();
     }
 
     std::cout << "Game over" << std::endl;

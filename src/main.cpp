@@ -1,5 +1,6 @@
 #include "othello.h"
 #include "randomengine.cpp"
+#include "minimaxengine.cpp"
 #include <stdlib.h>
 #include <time.h>
 
@@ -8,7 +9,10 @@ int main() {
 
     srand(time(NULL));
 
-    oth::Othello board(8, oth::RandomEngine(), oth::RandomEngine());
+    oth::MinimaxEngine en1 = oth::MinimaxEngine();
+    oth::RandomEngine en2 = oth::RandomEngine();
+
+    oth::Othello board(8, en2, en1);
     // board.drawBoard();
 
     board.startGame(oth::black);

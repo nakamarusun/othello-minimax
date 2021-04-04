@@ -45,8 +45,8 @@ private:
     int blackScore;
 
     // Store engine objects.
-    const Engine* whiteEngine;
-    const Engine* blackEngine;
+    Engine* whiteEngine;
+    Engine* blackEngine;
 
     // Helper variable to keep trach whether a tile is checked for potential moves.
     bool** _checked;
@@ -56,9 +56,6 @@ private:
 
     // List to store all the active pieces' coordinates.
     std::list<Point> pieces;
-
-    // Stack to store the undos
-    std::stack<std::list<UndoData>> undos;
 
 
     // Makes everything in checked to be false.
@@ -71,17 +68,11 @@ private:
     // Returns whether the operation is successful.
     bool updatePiece(Color color, int x, int y);
 
-    // This function is to add a new piece to the board and nothing else.
-    void playPiece(Color color, int x, int y, bool addUndoStack);
-
     // Recalculates all possible moves, and puts it in an array.
     void updateValidMoves();
 
     // Checks if a tile can be placed in this position.
     void updatePotentialCell(int x, int y);
-
-    // Undoes one move, and pops one from the stack.
-    void undoMove();
 
     // Walks the board to the specified direction. Will return the color
     // Of something that is different.
@@ -101,15 +92,31 @@ public:
 
     // Whose turn is it
     Color turn;
+
+    // Stack to store the undos
+    // The first index of the list is always the move that is played.
+    std::stack<std::list<UndoData>> undos;
     
     // Initializes the othello board, with all the variables.
-    Othello(int size, const Engine& whiteEngine, const Engine& blackEngine);
+    Othello(int size, Engine& whiteEngine, Engine& blackEngine);
 
     // Deallocate mem
     ~Othello();
 
+    // This function is to add a new piece to the board and nothing else.
+    void playPiece(Color color, int x, int y, bool addUndoStack);
+
+    // Gets the score of the specified color
+    int getScore(Color color);
+
+    // Undoes one move, and pops one from the stack.
+    void undoMove();
+
     // Draws the board in the command line.
     void drawBoard();
+
+    // Swaps the turn, and returns the current turn.
+    Color switchTurn();
 
     // Starts the game, with turn being the first color to go.
     // pauseEveryTurn dictates whether the game needs "enter" input

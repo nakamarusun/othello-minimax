@@ -5,11 +5,11 @@
 namespace oth {
     class RandomEngine : public Engine {
 
-        Point nextMove(const Othello& board, Color color) const {
+        Point nextMove(Othello& board) {
             
             // Get the valid moves for the color
             const std::list<Point>* move;
-            switch(color) {
+            switch(board.turn) {
                 case (white):
                     move = &board.whiteMove;
                     break;

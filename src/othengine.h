@@ -20,6 +20,6 @@ public:
 
         // Returns the coordinates for color's best move.
         // Throws an error if no moves are possible.
-        virtual Point nextMove(const Othello& board, Color color) const = 0;
+        virtual Point nextMove(Othello& board) = 0;
     };
 }
