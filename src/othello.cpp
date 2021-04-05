@@ -130,15 +130,16 @@ void Othello::playPiece(Color color, int x, int y, bool addUndoStack) {
 
     // Walk the board, to see any takes.
     for (int i = 0; i < 8; i++) {
+        // Walk the board to see any takes
         Color edgeColor = walkBoard(x, y, direction[i]);
+
+        // Choose next direction
+        const int* dir = direction[i];
+        int cy = y + dir[0];
+        int cx = x + dir[1];
         
         if (edgeColor != none && color == edgeColor) {
-            while(true) {
-                y += direction[i][0];
-                x += direction[i][1];
-
-                if (board[y][x].col == edgeColor) break;
-
+            do {
                 // Add and minus score
                 if (color == white) {
                     whiteScore++;
@@ -149,11 +150,15 @@ void Othello::playPiece(Color color, int x, int y, bool addUndoStack) {
                 }
 
                 // Add to undo list
-                if (addUndoStack) undoImd->push_back(UndoData(board[y][x].col, Point(x, y)));
+                if (addUndoStack) undoImd->push_back(UndoData(board[cy][cx].col, Point(cx, cy)));
 
                 // Flip color
-                board[y][x].col = color;
-            }
+                board[cy][cx].col = color;
+
+                // Add coordinates
+                cy += dir[0];
+                cx += dir[1];
+            } while (!(board[cy][cx].col == edgeColor));
         }
     }
 
@@ -326,7 +331,7 @@ void Othello::startGame(Color startTurn) {
     while (whiteMove.size() > 0 && blackMove.size() > 0) {
 
         if (pauseEveryTurn) {
-            std::cout << "Press Enter to Continue";
+            std::cout << "Press Enter to Continue\n";
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
         }
 
