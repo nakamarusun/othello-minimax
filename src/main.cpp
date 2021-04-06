@@ -7,7 +7,7 @@
 int main() {
     // Initializes the board with the engines.
 
-    srand(time(NULL));
+    srand(time(NULL)); // TODO: Change this
 
     std::cout << "Welcome to othello! The white piece will be \n";
     std::cout << "played by a random engine, while the black piece will be \n";

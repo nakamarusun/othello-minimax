@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <limits>
+#include <chrono>
 
 #define RECURDEPTH 3
 #define MAXSCORE int
@@ -140,10 +141,17 @@ public:
             // To the original one
             board.switchTurn();
 
+            // Measure time
+            auto start = std::chrono::high_resolution_clock::now();
+
             // Gets the coordinate
             minimaxRecur(board, 0, true);
 
-            std::cout << "[MINIMAX ENGINE] Number of moves foreseen: " << movesForeseen << std::endl;
+            // End time
+            auto end = std::chrono::high_resolution_clock::now();
+
+            std::cout << "[MINIMAX ENGINE] Number of moves foreseen: " << movesForeseen << " (Took: " << 
+            std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count() << "ms)" << std::endl;
             
             return chosenSquare;
         }

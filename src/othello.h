@@ -55,7 +55,7 @@ private:
     Cell** board;
 
     // List to store all the active pieces' coordinates.
-    std::list<Point> pieces;
+    std::list<Point> activePieces;
 
 
     // Makes everything in checked to be false.

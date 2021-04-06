@@ -100,13 +100,12 @@ bool Othello::updatePiece(Color color, int x, int y) {
     // Adds the corresponding piece to the board.
     board[y][x].col = color;
 
-    // Adds or delete the coordinate of the piece.
-    if (color == none) {
-        // Removes
-        pieces.remove_if([x, y](Point point) { return (point.x == x && point.y == y); });
-    } else {
-        // Adds
-        pieces.push_back(Point(x, y));
+    // Removes the active piece, if one overwrites it.
+    activePieces.remove_if([x, y](const Point& point) { return (point.x == x && point.y == y); });
+
+    // Adds the coordinate to the active pieces list.
+    if (color != none) {
+        activePieces.push_back(Point(x, y));
     }
 
     return true;
@@ -171,7 +170,7 @@ void Othello::updateValidMoves() {
     _resetPotentialMoves();
 
     // Iterates the present pieces
-    for (std::list<Point>::iterator it = pieces.begin(); it != pieces.end(); ++it) {
+    for (std::list<Point>::iterator it = activePieces.begin(); it != activePieces.end(); ++it) {
         int x = it->x;
         int y = it->y;
 
@@ -328,7 +327,7 @@ void Othello::startGame(Color startTurn) {
     drawBoard();
 
     // While there is still valid moves, we loop.
-    while (whiteMove.size() > 0 && blackMove.size() > 0) {
+    while ((turn == black && blackMove.size() > 0) || (turn == white && whiteMove.size() > 0)) {
 
         if (pauseEveryTurn) {
             std::cout << "Press Enter to Continue\n";
