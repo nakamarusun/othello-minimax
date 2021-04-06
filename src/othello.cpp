@@ -4,6 +4,11 @@
 #include <list>
 #include <limits>
 
+#define RESET "\033[0m"
+#define BLACK "\033[37;40m"
+#define WHITE "\033[30;47m"
+#define EMPTY "\033[34;46m"
+
 using namespace oth;
 
 Othello::Cell::Cell() {
@@ -74,6 +79,7 @@ void Othello::_resetPotentialMoves() {
 }
 
 bool Othello::updatePiece(Color color, int x, int y) {
+    // Check if within bounds
     if (!(x > -1 && y > -1 && x < size && y < size)) return false;
 
     // Check what's in the board at that point
@@ -104,9 +110,8 @@ bool Othello::updatePiece(Color color, int x, int y) {
     activePieces.remove_if([x, y](const Point& point) { return (point.x == x && point.y == y); });
 
     // Adds the coordinate to the active pieces list.
-    if (color != none) {
+    if (color != none)
         activePieces.push_back(Point(x, y));
-    }
 
     return true;
 }
@@ -302,16 +307,14 @@ void Othello::drawBoard() {
             // Print the piece, if the cell is occupied.
             switch(board[i][j].col) {
                 case(black):
-                    symbol = 'O';
+                    std::cout << BLACK << "[]" << RESET;
                     break;
                 case(white):
-                    symbol = 'X';
+                    std::cout << WHITE << "[]" << RESET;
                     break;
                 default:
-                    symbol = '_';
+                    std::cout << EMPTY << "  " << RESET;
             }
-
-            std::cout << symbol << " ";
         }
         std::cout << std::endl;
     }
@@ -324,6 +327,7 @@ void Othello::startGame(Color startTurn) {
     // Start with turn
     turn = startTurn;
 
+    std::cout << "Initial board:" << std::endl;
     drawBoard();
 
     // While there is still valid moves, we loop.

@@ -17,7 +17,7 @@ int main() {
     oth::RandomEngine en2 = oth::RandomEngine();
 
     oth::Othello board(8, en2, en1);
-    // board.drawBoard();
+    // board.pauseEveryTurn = false;
 
     board.startGame(oth::white);
 
