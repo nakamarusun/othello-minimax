@@ -6,7 +6,7 @@
 #include <limits>
 #include <chrono>
 
-#define RECURDEPTH 3
+#define RECURDEPTH 4
 #define SCORE int
 
 namespace oth {

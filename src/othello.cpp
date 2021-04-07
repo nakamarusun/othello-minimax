@@ -9,6 +9,8 @@
 #define WHITE "\033[30;47m"
 #define EMPTY "\033[34;46m"
 
+#define ANSICOLOR
+
 using namespace oth;
 
 Othello::Cell::Cell() {

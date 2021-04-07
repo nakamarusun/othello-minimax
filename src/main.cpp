@@ -1,6 +1,7 @@
 #include "othello.h"
 #include "randomengine.cpp"
 #include "minimaxengine.cpp"
+#include "inputengine.cpp"
 #include <stdlib.h>
 #include <time.h>
 
@@ -14,12 +15,12 @@ int main() {
     std::cout << "played by minimax algorithm with 3 recursion depths.\n" << std::endl;
 
     oth::MinimaxEngine en1 = oth::MinimaxEngine();
-    oth::RandomEngine en2 = oth::RandomEngine();
+    oth::InputEngine en2 = oth::InputEngine();
 
     oth::Othello board(8, en2, en1);
     // board.pauseEveryTurn = false;
 
-    board.startGame(oth::white);
+    board.startGame(oth::black);
 
     return 0;
 }
